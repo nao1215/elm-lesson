@@ -1,8 +1,9 @@
-module Main exposing (..)
+module Main exposing (Model, Msg(..), init, main, update, view)
 
 import Browser
-import Html exposing (Html, button, div, text)
-import Html.Events exposing (onClick)
+import Html exposing (Attribute, Html, div, input, text)
+import Html.Attributes exposing (..)
+import Html.Events exposing (onInput)
 
 
 main =
@@ -10,39 +11,30 @@ main =
 
 
 type alias Model =
-    Int
+    { content : String
+    }
 
 
 init : Model
 init =
-    0
+    { content = "" }
 
 
 type Msg
-    = Increment
-    | Decrement
-    | Reset
+    = Change String
 
 
 update : Msg -> Model -> Model
 update msg model =
     case msg of
-        Increment ->
-            model + 1
-
-        Decrement ->
-            model - 1
-
-        Reset ->
-            0
+        Change newContent ->
+            { model | content = newContent }
 
 
 view : Model -> Html Msg
 view model =
     div []
-        [ button [ onClick Decrement ] [ text "-" ]
-        , div [] [ text (String.fromInt model) ]
-        , button [ onClick Increment ] [ text "+" ]
-        , div [] []
-        , button [ onClick Reset ] [ text "reset" ]
+        [ input [ placeholder "Text to reverse", value model.content, onInput Change ] []
+        , div [] [ text (String.reverse model.content) ]
+        , div [] [ text ("文字列の長さ: " ++ String.fromInt (String.length model.content)) ]
         ]
